@@ -6,7 +6,7 @@ from langchain.tools import tool
 
 
 
-class SearchTools:
+class SearchTools():
 
     @tool("Search the internet")
     def search_internet(query):
@@ -37,6 +37,8 @@ class SearchTools:
 
             return '\n'.join(string)
 
+class ScrapeWebsite():
+
     @tool("Scrape website")
     def scrape_website(url):
         """Scrapes a given website URL and returns the content"""
@@ -48,6 +50,9 @@ class SearchTools:
         else:
             return f"Failed to retrieve content from {url}"
 
+
+class SearchWikipedia():
+
     @tool("Search Wikipedia")
     def search_wikipedia(query):
         """Search Wikipedia for a given query and return the summary"""
@@ -58,6 +63,8 @@ class SearchTools:
             return f"Title: {data['title']}\nSummary: {data['extract']}\nLink: {data['content_urls']['desktop']['page']}"
         else:
             return f"Failed to retrieve information from Wikipedia for query: {query}"
+
+class SearchNews():
 
     @tool("Search news")
     def search_news(query):
@@ -80,6 +87,7 @@ class SearchTools:
             return f"Failed to retrieve news for query: {query}"
 
 # Use this code if you don't have semantics scholar API key
+
 #    @tool("Search for academic papers")
 #    def search_academic_papers(query):
 #        """Search for academic papers related to a given topic"""
@@ -102,6 +110,9 @@ class SearchTools:
 #        return '\n'.join(results)
 
 
+# Use this code if you have semantic scholar API key
+
+class SearchAcademicPapers():
 
     @tool("Search academic papers")
     def search_academic_papers(query):

@@ -2,16 +2,15 @@ from crewai import Crew
 from textwrap import dedent
 from agents import TechTalkAgents
 from tasks import TechTalkTasks
-
 from dotenv import load_dotenv
 load_dotenv()
 
 class TechTalkCrew:
-    def __init__(self, topic, length, interests, pain_point, type):
+    def __init__(self, topic, length, interests, pain_point, type_of_presentation):
         self.topic = topic
         self.length = length
         self.pain_point = pain_point
-        self.type = type
+        self.type_of_presentation = type_of_presentation
         self.interests = interests
 
     def run(self):
@@ -35,7 +34,9 @@ class TechTalkCrew:
         rewrite_result = rewrite_crew.kickoff()
 
         # Perform storytelling task
-        story_task = tasks.create_a_story(storytelling_consultant, rewrite_result, self.topic, self.interests, self.pain_point, self.type)
+        story_task = tasks.create_a_story(
+            storytelling_consultant, rewrite_result, self.topic, self.interests,
+            self.pain_point, self.type_of_presentation)
         story_crew = Crew(agents=[storytelling_consultant], tasks=[story_task], verbose=True)
         story_result = story_crew.kickoff()
 
@@ -44,8 +45,7 @@ class TechTalkCrew:
         slide_crew = Crew(agents=[slide_designer], tasks=[slide_task], verbose=True)
         slide_result = slide_crew.kickoff()
 
-        return slide_result
-
+        return story_result, slide_result
 
 # Main function to run the crew
 if __name__ == "__main__":
@@ -55,11 +55,17 @@ if __name__ == "__main__":
     length = input(dedent("What length of the presentation do you want?\n"))
     interests = input(dedent("What are the interests of the audience?\n"))
     pain_point = input(dedent("What are the pain points of your audience you can use to target?\n"))
-    type = input(dedent("What type of presentation do you want to make: Online or Offline?\n"))
+    type_of_presentation = input(dedent("What type of presentation do you want to make: Online or Offline?\n"))
 
-    tech_talk_crew = TechTalkCrew(topic, length, interests, pain_point, type)
-    result = tech_talk_crew.run()
+    tech_talk_crew = TechTalkCrew(topic, length, interests, pain_point, type_of_presentation)
+    story_result, slide_result = tech_talk_crew.run()
+
     print("\n\n########################")
     print("## Here is your PowerPoint Presentation Blueprint")
     print("########################\n")
-    print(result)
+    print(slide_result)
+    
+    print("\n\n########################")
+    print("## Here is the storytelling consultant's output")
+    print("########################\n")
+    print(story_result)
